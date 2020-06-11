@@ -28,7 +28,30 @@ blockchain.create_new_transaction(Transaction::new(10, "da Miner".to_owned(), "d
 
 // create new block in our chain
 let latest_mined_block = blockchain.create_new_block(nonce, previous_hash, block_hash);
+```
 
+### How to run the Server
+```console
+$ cd server
+$ cargo build
+$ cargo run
+```
+
+### How to use the Server
+```
+to get current chain
+GET http://localhost:3000/blockchain
+
+to post new Transaction
+POST http://localhost:3000/transaction
+body {
+	"amount": 99,
+	"sender": "elvis",
+	"recipient": "elvis' friend"
+}
+
+to mine new Block
+POST http://localhost:3000/mine
 ```
 
 ### API ready
@@ -106,28 +129,4 @@ let latest_mined_block = blockchain.create_new_block(nonce, previous_hash, block
         ]
     }
 }
-```
-
-### How to run it
-```console
-$ cd server
-$ cargo build
-$ cargo run
-```
-
-### How to use it
-```
-to get current chain
-GET http://localhost:3000/blockchain
-
-to post new Transaction
-POST http://localhost:3000/transaction
-body {
-	"amount": 99,
-	"sender": "elvis",
-	"recipient": "elvis' friend"
-}
-
-to mine new Block
-POST http://localhost:3000/mine
 ```

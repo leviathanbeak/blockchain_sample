@@ -4,13 +4,13 @@ extern crate actix_web;
 extern crate blockchain;
 extern crate serde_json;
 
-mod services;
 mod args;
+mod services;
 
 use actix_web::{middleware, App, HttpServer};
+use args::Args;
 use blockchain::blockchain::Blockchain;
 use services::{blockchain_api, mine_api, transactions_api};
-use args::Args;
 
 #[derive(Debug, Clone)]
 pub struct AppState {
@@ -28,7 +28,7 @@ impl AppState {
 async fn main() -> std::io::Result<()> {
     let args = Args::parse();
 
-    let address = format!("0.0.0.0:{}", args.port);    
+    let address = format!("0.0.0.0:{}", args.port);
 
     let levicoin = Blockchain::new(address.clone());
     let levicoin = Arc::new(Mutex::new(levicoin));

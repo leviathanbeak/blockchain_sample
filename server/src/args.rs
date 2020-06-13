@@ -3,7 +3,7 @@ use clap::{App, Arg};
 #[derive(Debug)]
 pub struct Args {
     pub port: String,
-    pub master_address: Option<String>
+    pub master_address: Option<String>,
 }
 
 impl Args {
@@ -15,20 +15,20 @@ impl Args {
                     .long("port")
                     .takes_value(true)
                     .required(true)
-                    .help("port for your server")
+                    .help("port for your server"),
             )
             .arg(
                 Arg::with_name("master")
                     .long("master")
                     .short("m")
                     .takes_value(true)
-                    .help("Master address to sync to")
+                    .help("Master address to sync to"),
             )
             .get_matches();
-        
+
         let master_address = match matches.value_of("master") {
             Some(s) => Some(s.to_string()),
-            None => None
+            None => None,
         };
 
         Args {

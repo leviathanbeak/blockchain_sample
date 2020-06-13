@@ -10,7 +10,7 @@ mod services;
 use actix_web::{middleware, App, HttpServer};
 use args::Args;
 use blockchain::blockchain::Blockchain;
-use services::{blockchain_api, mine_api, transactions_api};
+use services::{blockchain_api, mine_api, network_api, transactions_api};
 
 #[derive(Debug, Clone)]
 pub struct AppState {
@@ -23,7 +23,7 @@ impl AppState {
     }
 }
 
-// watch: cargo watch -x "run -- -p 3000"
+// cargo watch -x "run -- -p 3000"
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
     let args = Args::parse();
@@ -45,6 +45,7 @@ async fn main() -> std::io::Result<()> {
             .service(blockchain_api::init_service())
             .service(transactions_api::init_service())
             .service(mine_api::init_service())
+            .service(network_api::init_service())
     })
     .bind(address)?
     .run()

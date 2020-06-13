@@ -6,22 +6,13 @@ extern crate serde_json;
 
 mod args;
 mod services;
+mod app_state;
 
 use actix_web::{middleware, App, HttpServer};
 use args::Args;
 use blockchain::blockchain::Blockchain;
 use services::{blockchain_api, mine_api, network_api, transactions_api};
-
-#[derive(Debug, Clone)]
-pub struct AppState {
-    pub blockchain: Arc<Mutex<Blockchain>>,
-}
-
-impl AppState {
-    pub fn new(blockchain: Arc<Mutex<Blockchain>>) -> Self {
-        AppState { blockchain }
-    }
-}
+use app_state::AppState;
 
 // cargo watch -x "run -- -p 3000"
 #[actix_rt::main]

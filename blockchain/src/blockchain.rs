@@ -1,21 +1,28 @@
 #![allow(dead_code)]
-use sha2::{Sha256, Digest};
 use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 
-use crate::block::{Block, Hash, NonceNumber, BlockNumber};
+use crate::block::{Block, BlockNumber, Hash, NonceNumber};
+use crate::node::{Node, NodeAddress};
 use crate::transaction::Transaction;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Blockchain {
     pub chain: Vec<Block>,
     pub pending_transactions: Vec<Transaction>,
+    pub node: Node,
+    pub network_nodes: Vec<Node>,
 }
 
 impl Blockchain {
-    pub fn new() -> Self {
+    pub fn new(address: NodeAddress) -> Self {
+        let node = Node::new(address);
+
         let mut blockchain = Blockchain {
             chain: vec![],
             pending_transactions: vec![],
+            node,
+            network_nodes: vec![],
         };
 
         // Genesis Block
@@ -60,10 +67,11 @@ impl Blockchain {
     }
 
     pub fn format_pending_data(&self) -> String {
-        let txs = self.pending_transactions
+        let txs = self
+            .pending_transactions
             .iter()
             .fold("".to_owned(), |acc, curr| acc + &curr.stringify());
-        
+
         let index = self.get_next_index();
 
         format!("transactions: {}, index: {}", txs, index)
@@ -96,6 +104,12 @@ impl Blockchain {
         format!("{:x}", res)
     }
 
+    pub fn add_new_network_node(&mut self, new_node: &Node) {
+        if new_node != &self.node && !self.network_nodes.contains(new_node) {
+            self.network_nodes.push(new_node.clone());
+        }
+    }
+
     // * Private Functions
     fn append_tx(&mut self, tx: Transaction) {
         self.pending_transactions.push(tx);
@@ -123,7 +137,6 @@ mod tests {
 
     #[test]
     fn test_new_block() {
-
         let nonce = Blockchain::consensus(ConsensusOption::ProofOfWork(
             "previousHash",
             "some stupid data",

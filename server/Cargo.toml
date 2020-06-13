@@ -1,8 +1,8 @@
 [package]
 name = "server"
 version = "0.1.0"
-authors = ["root"]
 edition = "2018"
+authors = ["elvis <elvisdedic@outlook.com>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -13,4 +13,5 @@ serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 bytes = "0.5.2"
 futures = "0.3.1"
-blockchain = { version="0.1.1", path = "../blockchain"}
+blockchain = { version="0.1.2", path = "../blockchain"}
+clap = "2.33.0"

@@ -15,7 +15,7 @@ impl Args {
                     .long("port")
                     .takes_value(true)
                     .required(true)
-                    .help("port for your server"),
+                    .help("Port for your server"),
             )
             .arg(
                 Arg::with_name("master")

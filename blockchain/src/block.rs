@@ -1,5 +1,7 @@
 use std::time::SystemTime;
+
 use serde::{Deserialize, Serialize};
+
 use crate::transaction::Transaction;
 
 pub type BlockNumber = u64;

@@ -7,7 +7,7 @@ use serde_json::json;
 
 pub fn init_service() -> Scope {
     web::scope("/network/register")
-        .service(web::resource("/").route(web::post().to(handle_register)))
+        .service(web::resource("").route(web::post().to(handle_register)))
         .service(web::resource("/bulk").route(web::post().to(handle_bulk)))
         .service(web::resource("/broadcast").route(web::post().to(handle_broadcast)))
 }
@@ -26,20 +26,20 @@ async fn handle_broadcast(
     
     match app_state.blockchain.lock() {
         Ok(mut blockchain) => {
-            // append to current node
-            blockchain.add_new_network_node(&new_node);
-
             // broadcast to other nodes
             let client = Client::new();
-            let body_params = [("address", &new_node.address)];                
             futures::future::join_all(blockchain.network_nodes.iter().map(|node| {
                 let client = &client;
+                let new_node = &new_node;
                 async move {
                     let url = format!("http://localhost:{}/network/register", node.address);
-                    client.post(&url).form(&body_params).send().await
+                    client.post(&url).json(&new_node).send().await
                 }
             }))
             .await;
+
+            // append to current node
+            blockchain.add_new_network_node(&new_node);
 
             // send other nodes to the new node
             let url = format!("http://localhost:{}/network/register/bulk", &new_node.address);

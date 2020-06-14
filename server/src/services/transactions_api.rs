@@ -2,8 +2,8 @@ use crate::AppState;
 use actix_web::{error, web, HttpResponse, Scope};
 use blockchain::transaction::Transaction;
 use reqwest::Client;
-use serde_json::json;
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 
 pub fn init_service() -> Scope {
     web::scope("/transaction")
@@ -26,10 +26,10 @@ async fn handle_broadcast(
     let transaction = Transaction::new(tx_im.amount, tx_im.recipient, tx_im.sender);
 
     match app_state.blockchain.lock() {
-        Ok(mut blockchain) => {            
+        Ok(mut blockchain) => {
             let o = &blockchain.append_new_transaction(transaction.clone());
             let client = Client::new();
-            
+
             futures::future::join_all(blockchain.network_nodes.iter().map(|node| {
                 let client = &client;
                 let transaction = &transaction;
@@ -39,11 +39,11 @@ async fn handle_broadcast(
                 }
             }))
             .await;
-     
+
             let res = json!({ "note": format!("it will be part of Block {}", o) });
             Ok(HttpResponse::Ok().json(res))
         }
-        Err(e) => Err(error::ErrorInternalServerError(e.to_string()))
+        Err(e) => Err(error::ErrorInternalServerError(e.to_string())),
     }
 }
 

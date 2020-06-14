@@ -37,12 +37,12 @@ async fn main() -> std::io::Result<()> {
     .bind(address)?
     .run();
 
-    futures::future::join(server, run_broadcast(&args)).await;
-
-    Ok(())
+    match futures::future::join(server, run_broadcast(&args)).await {
+        _ => Ok(())
+    }
 }
 
-async fn run_broadcast(args: &Args) -> Result<(), String> {
+async fn run_broadcast(args: &Args) -> Result<(), reqwest::Error> {
     let port = args.port.clone();
     match args.master_address {
         Some(ref address) => {
@@ -54,7 +54,7 @@ async fn run_broadcast(args: &Args) -> Result<(), String> {
                 .await
             {
                 Ok(_) => Ok(()),
-                Err(e) => Err(e.to_string()),
+                Err(e) => Err(e),
             }
         }
         _ => Ok(()),

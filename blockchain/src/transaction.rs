@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
+use rand::prelude::*;
 
 type Address = String;
 
@@ -8,14 +9,19 @@ pub struct Transaction {
     amount: u64,
     recipient: Address,
     sender: Address,
+    id: i64,
 }
 
 impl Transaction {
     pub fn new(amount: u64, recipient: Address, sender: Address) -> Self {
+        let mut rng = rand::thread_rng();
+        let id: i64 = rng.gen();
+
         Transaction {
             amount,
             recipient,
             sender,
+            id,
         }
     }
 

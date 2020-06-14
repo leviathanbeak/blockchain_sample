@@ -47,10 +47,16 @@ impl Blockchain {
             self.pending_transactions.clone(),
         );
 
-        self.chain.push(block.clone());
-        self.reset_pending_transactions();
+        self.append_new_block(block.clone());
 
         block
+    }
+
+    pub fn append_new_block(&mut self, block: Block) {
+        if block.index == self.get_next_index() {
+            self.chain.push(block);
+            self.reset_pending_transactions();
+        }
     }
 
     pub fn get_last_block(&self) -> Option<&Block> {
@@ -61,8 +67,8 @@ impl Blockchain {
         self.get_last_block().unwrap().hash.clone()
     }
 
-    pub fn create_new_transaction(&mut self, tx: Transaction) -> BlockNumber {
-        self.append_tx(tx);
+    pub fn append_new_transaction(&mut self, tx: Transaction) -> BlockNumber {
+        self.pending_transactions.push(tx);
         self.get_last_block().unwrap().index + 1
     }
 
@@ -111,10 +117,6 @@ impl Blockchain {
     }
 
     // * Private Functions
-    fn append_tx(&mut self, tx: Transaction) {
-        self.pending_transactions.push(tx);
-    }
-
     fn reset_pending_transactions(&mut self) {
         self.pending_transactions = vec![];
     }

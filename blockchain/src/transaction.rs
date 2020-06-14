@@ -9,13 +9,13 @@ pub struct Transaction {
     amount: u64,
     recipient: Address,
     sender: Address,
-    id: i64,
+    id: u64,
 }
 
 impl Transaction {
     pub fn new(amount: u64, recipient: Address, sender: Address) -> Self {
         let mut rng = rand::thread_rng();
-        let id: i64 = rng.gen();
+        let id: u64 = rng.gen();
 
         Transaction {
             amount,
@@ -32,6 +32,6 @@ impl Transaction {
 
 impl fmt::Display for Transaction {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "({}, {}, {})", self.amount, self.recipient, self.sender)
+        write!(f, "({}, {}, {}, {})", self.amount, self.recipient, self.sender, self.id)
     }
 }

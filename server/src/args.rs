@@ -1,6 +1,6 @@
 use clap::{App, Arg};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Args {
     pub port: String,
     pub master_address: Option<String>,

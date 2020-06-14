@@ -21,7 +21,7 @@ async fn main() -> std::io::Result<()> {
 
     let address = format!("0.0.0.0:{}", args.port);
 
-    let levicoin = Blockchain::new(address.clone());
+    let levicoin = Blockchain::new(args.port);
     let levicoin = Arc::new(Mutex::new(levicoin));
 
     if let Some(_address) = args.master_address {

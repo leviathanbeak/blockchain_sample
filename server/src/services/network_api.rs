@@ -14,16 +14,15 @@ pub fn init_service() -> Scope {
 
 #[derive(Debug, Deserialize, Serialize)]
 struct BulkNodes {
-    nodes: Vec<Node>
+    nodes: Vec<Node>,
 }
 
 async fn handle_broadcast(
     node: web::Json<Node>,
     app_state: web::Data<AppState>,
 ) -> Result<HttpResponse, error::Error> {
-
     let new_node = node.0;
-    
+
     match app_state.blockchain.lock() {
         Ok(mut blockchain) => {
             // broadcast to other nodes
@@ -42,13 +41,17 @@ async fn handle_broadcast(
             blockchain.add_new_network_node(&new_node);
 
             // send other nodes to the new node
-            let url = format!("http://localhost:{}/network/register/bulk", &new_node.address);
-            let nodes: Vec<Node> = [&blockchain.network_nodes[..], &[blockchain.node.clone()]].concat();
+            let url = format!(
+                "http://localhost:{}/network/register/bulk",
+                &new_node.address
+            );
+            let nodes: Vec<Node> =
+                [&blockchain.network_nodes[..], &[blockchain.node.clone()]].concat();
             let json_res = json!({
                 "nodes": nodes,
             });
             &client.post(&url).json(&json_res).send().await;
-            
+
             Ok(HttpResponse::Ok().json(new_node))
         }
         Err(e) => Err(error::ErrorInternalServerError(e.to_string())),
@@ -59,7 +62,6 @@ async fn handle_bulk(
     item: web::Json<BulkNodes>,
     app_state: web::Data<AppState>,
 ) -> Result<HttpResponse, error::Error> {
-    
     match app_state.blockchain.lock() {
         Ok(mut blockchain) => {
             for node in item.nodes.iter() {

@@ -83,6 +83,18 @@ impl Blockchain {
         format!("transactions: {}, index: {}", txs, index)
     }
 
+    pub fn is_chain_valid(&self) -> bool {
+        for i in 1..self.chain.len() {
+            let curr = self.chain.get(i).unwrap();
+            let prev = self.chain.get(i - 1).unwrap();
+            if curr.previous_block_hash != prev.hash || &curr.hash[..4] != "0000" {
+                return false;
+            }
+        }
+
+        true
+    }
+
     pub fn consensus(con: ConsensusOption) -> NonceNumber {
         match con {
             ConsensusOption::ProofOfWork(prev_block_hash, formated_data) => {
@@ -139,11 +151,10 @@ mod tests {
 
     #[test]
     fn test_new_block() {
-        let nonce = Blockchain::consensus(ConsensusOption::ProofOfWork(
-            "previousHash",
-            "some stupid data",
-        ));
-
-        assert_eq!(nonce, 2901);
+        let v = vec![1,2,3,4,5];
+        for i in 1..v.len() {
+            println!("{} and i is {}", v.get(i).unwrap(), i);
+        }
+        panic!();
     }
 }

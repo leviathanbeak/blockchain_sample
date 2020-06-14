@@ -8,8 +8,10 @@ pub struct Node {
 }
 
 impl Node {
-    pub fn new(address: NodeAddress) -> Self {
-        Node { address }
+    pub fn new(address: &NodeAddress) -> Self {
+        Node {
+            address: address.clone(),
+        }
     }
 }
 

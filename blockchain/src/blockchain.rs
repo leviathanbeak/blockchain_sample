@@ -15,7 +15,7 @@ pub struct Blockchain {
 }
 
 impl Blockchain {
-    pub fn new(address: NodeAddress) -> Self {
+    pub fn new(address: &NodeAddress) -> Self {
         let node = Node::new(address);
 
         let mut blockchain = Blockchain {

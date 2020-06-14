@@ -1,6 +1,6 @@
+use rand::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::fmt;
-use rand::prelude::*;
 
 type Address = String;
 
